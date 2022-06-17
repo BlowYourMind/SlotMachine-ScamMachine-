@@ -1,3 +1,3 @@
 # SlotMachine-ScamMachine-
 ScamMachine
-| This is the best code i have ever wrote :)
+| This is the best code I have ever wrote :)
