@@ -5,9 +5,10 @@ $field = [
     [''],[''],[''],[''],[''],
     [''],[''],[''],[''],[''],
 ];
+$wallet = 10;
 $symbols = [
-  "A","B","C","D","E" // It is almost impossible to win with this amount of symbols and only 5 paylines
-];
+  "A","B","C","D","E"// It is almost impossible to win with this amount of symbols and only 5 paylines
+];// first element of array is the most expensive one
 function randomSymbol(array $field, array $symbols) : array{
     for($i = 0 ; $i<=14;$i++){
         $field[$i] = $symbols[array_rand($symbols,1)];
@@ -22,22 +23,39 @@ function display_board(array $field):void
     echo "---+---+---+---+---|\n";
     echo " $field[10] | $field[11] | $field[12] | $field[13] | $field[14] |\n";
 }
-function winnerCheck(array $field):int{
+function winnerCheck(array $field,array $symbols):float{
     $winingTimes = 0;
     if($field[0]==$field[1] && $field[0]==$field[2] && $field[0]==$field[3] && $field[0]==$field[4]){
         $winingTimes += 1;
-    }
+        for($i = 0; $i<count($symbols);$i++){
+        if($field[0]==$symbols[$i]){
+            $winingTimes *=10/($i+1);
+    }}}
     if($field[5]==$field[6] && $field[5]==$field[7] && $field[5]==$field[8] && $field[5]==$field[9]){
     $winingTimes += 1;
-}
+        for($i = 0; $i<count($symbols);$i++){
+            if($field[5]==$symbols[$i]){
+                $winingTimes *=10/($i+1);
+}}}
     if($field[10]==$field[11] && $field[10]==$field[12] && $field[10]==$field[13] && $field[10]==$field[14]){
         $winingTimes += 1;
-    }
+        for($i = 0; $i<count($symbols);$i++){
+            if($field[10]==$symbols[$i]){
+                $winingTimes *=10/($i+1);
+    }}}
     if($field[0]==$field[6] && $field[0]==$field[12] && $field[0]==$field[8] && $field[0]==$field[4]){
         $winingTimes += 1;
-    }
-    if($field[10]==$field[6] && $field[10]==$field[2] && $field[10]==$field[8] && $field[10]==$field[14]){
+        for($i = 0; $i<count($symbols);$i++){
+            if($field[0]==$symbols[$i]){
+                $winingTimes *=10/($i+1);
+    }}}
+    if($field[10]==$field[6] && $field[10]==$field[2] && $field[10]==$field[8] && $field[10]==$field[14]) {
         $winingTimes += 1;
+        for ($i = 0; $i < count($symbols); $i++) {
+            if ($field[10] == $symbols[$i]) {
+                $winingTimes *= 10 / ($i+1);
+            }
+        }
     }
     return $winingTimes;
 }
@@ -49,31 +67,35 @@ while($welcome == "yes") {
     $insertedAmount = (float)readline("Enter betting price: ");
     $field1 = randomSymbol($field, $symbols);
     if ($insertedAmount == $possibleAmounts[0]) {
+        $wallet -= $insertedAmount;
         display_board($field1);
-        for ($i = 1; $i <= 5; $i++) {
-            if (winnerCheck($field1) == $i) {
-                $result = $insertedAmount * $i * 100;
-                echo "Congratulations you won : $result$" . PHP_EOL . "Your bet was $insertedAmount$  | ";
-            }
-        }
+        $result = winnerCheck($field1,$symbols)*$insertedAmount;
+       if(winnerCheck($field1,$symbols)){
+           echo "Congratulations you won : $result$" . PHP_EOL . "Your bet was $insertedAmount$  | ";
+           $wallet += $result;
+       }
+       echo "$wallet$ is left in your wallet |";
     } elseif ($insertedAmount == $possibleAmounts[1]) {
+        $wallet -= $insertedAmount;
         display_board($field1);
-        for ($i = 1; $i <= 5; $i++) {
-            if (winnerCheck($field1) == $i) {
-                $result = $insertedAmount * $i * 100;
-                echo "Congratulations you won : $result$" . PHP_EOL . "Your bet was $insertedAmount$ | ";
-            }
+        $result = winnerCheck($field1,$symbols)*$insertedAmount;
+        if(winnerCheck($field1,$symbols)){
+            echo "Congratulations you won : $result$" . PHP_EOL . "Your bet was $insertedAmount$  | ";
+            $wallet += $result;
         }
+        echo "$wallet$ is left in your wallet |";
     } elseif ($insertedAmount == $possibleAmounts[2]) {
         display_board($field1);
-        for ($i = 1; $i <= 5; $i++) {
-            if (winnerCheck($field1) == $i) {
-                $result = $insertedAmount * $i * 100;
-                echo "Congratulations you won : $result$" . PHP_EOL . "Your bet was $insertedAmount$ | ";
-            }
+        $wallet -= $insertedAmount;
+        $result = winnerCheck($field1,$symbols)*$insertedAmount;
+        if(winnerCheck($field1,$symbols)){
+            echo "Congratulations you won : $result$" . PHP_EOL . "Your bet was $insertedAmount$  | ";
+            $wallet += $result;
         }
+        echo "$wallet$ is left in your wallet | ";
     } else {
         echo "Invalid inserted amount, try again |";
     }
     $welcome = readline( "Are you scammed enough? Continue? yes or no? ");
 }
+echo "Thanks for playing! Goodbye :)";
